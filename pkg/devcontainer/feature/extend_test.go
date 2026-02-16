@@ -396,3 +396,17 @@ func (suite *ExtendTestSuite) TestContainsFeature() {
 		suite.Fail("Expected not to contain feature-c")
 	}
 }
+
+func (suite *ExtendTestSuite) TestFindContainerUsersUsesMetadataAndImageUserFallbacks() {
+	effectiveMetadata := &config.ImageMetadataConfig{
+		Config: []*config.ImageMetadata{{
+			DevContainerConfigBase: config.DevContainerConfigBase{
+				RemoteUser: "vscode",
+			},
+		}},
+	}
+
+	containerUser, remoteUser := findContainerUsers(effectiveMetadata, "", "nonroot")
+	suite.Equal("nonroot", containerUser)
+	suite.Equal("vscode", remoteUser)
+}

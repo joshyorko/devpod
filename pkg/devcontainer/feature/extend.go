@@ -75,7 +75,10 @@ func GetExtendedBuildInfo(ctx *config.SubstitutionContext, imageBuildInfo *confi
 	}
 
 	contextPath := config.GetContextPath(devContainerConfig.Config)
-	buildInfo, err := getFeatureBuildOptions(contextPath, imageBuildInfo, target, features)
+	effectiveImageBuildInfo := *imageBuildInfo
+	effectiveImageBuildInfo.Metadata = mergedImageMetadataConfig
+
+	buildInfo, err := getFeatureBuildOptions(contextPath, &effectiveImageBuildInfo, target, features)
 	if err != nil {
 		return nil, err
 	}
