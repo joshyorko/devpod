@@ -37,7 +37,7 @@ const (
 	DisableSSHKeepAlive time.Duration = 0 * time.Second
 )
 
-// SSHCmd holds the ssh cmd flags
+// SSHCmd holds the ssh cmd flags.
 type SSHCmd struct {
 	*flags.GlobalFlags
 
@@ -66,7 +66,7 @@ type SSHCmd struct {
 	WorkDir string
 }
 
-// NewSSHCmd creates a new ssh command
+// NewSSHCmd creates a new ssh command.
 func NewSSHCmd(f *flags.GlobalFlags) *cobra.Command {
 	cmd := &SSHCmd{
 		GlobalFlags: f,
@@ -126,7 +126,7 @@ func NewSSHCmd(f *flags.GlobalFlags) *cobra.Command {
 	return sshCmd
 }
 
-// Run runs the command logic
+// Run runs the command logic.
 func (cmd *SSHCmd) Run(
 	ctx context.Context,
 	devPodConfig *config.Config,
@@ -592,7 +592,7 @@ func (cmd *SSHCmd) startServices(
 }
 
 // setupGPGAgent will forward a local gpg-agent into the remote container
-// this works by using cmd/agent/workspace/setup_gpg
+// this works by using cmd/agent/workspace/setup_gpg.
 func (cmd *SSHCmd) setupGPGAgent(
 	ctx context.Context,
 	containerClient *ssh.Client,
