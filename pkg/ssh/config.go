@@ -219,6 +219,26 @@ func buildSSHConfigLines(params addHostParams, proxyCmd string) []string {
 		build()
 }
 
+func sshConfigKeyword(line string) string {
+	trimmed := strings.TrimSpace(line)
+	if trimmed == "" || strings.HasPrefix(trimmed, "#") {
+		return ""
+	}
+
+	if index := strings.IndexAny(trimmed, " \t="); index >= 0 {
+		return trimmed[:index]
+	}
+
+	return trimmed
+}
+
+func isSSHSectionStart(line string) bool {
+	keyword := sshConfigKeyword(line)
+
+	return strings.EqualFold(keyword, "host") ||
+		strings.EqualFold(keyword, "match")
+}
+
 // findInsertPosition finds where to insert new SSH config entry.
 func findInsertPosition(config string) (int, []string, error) {
 	lineNumber := 0
@@ -229,13 +249,14 @@ func findInsertPosition(config string) (int, []string, error) {
 	scanner := bufio.NewScanner(strings.NewReader(config))
 	for scanner.Scan() {
 		line := scanner.Text()
+		trimmed := strings.TrimSpace(line)
 
-		if strings.HasPrefix(strings.TrimSpace(line), "Host") && !found {
+		if isSSHSectionStart(line) && !found {
 			found = true
 			lineNumber = max(lineNumber-commentLines, 0)
 		}
 
-		if strings.HasPrefix(strings.TrimSpace(line), "#") {
+		if strings.HasPrefix(trimmed, "#") {
 			commentLines++
 		} else {
 			commentLines = 0
